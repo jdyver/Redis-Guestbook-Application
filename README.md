@@ -1,6 +1,6 @@
 # Redis-Guestbook-Application
 
-## RedisExample.sh up | up online | down
+### RedisExample.sh up | up online | down
 - Up offline is default (using local files)
 - Up online is optional to use the online files
 - Down removes the app (required for k8s removal using AWS LB)
@@ -8,12 +8,14 @@
 - Note: This specifically sets up the frontend with a cloud load balancer
 
 
-## Requirement: Kubectl setup to k8s cluster
+### Requirement:
+Kubectl is setup to k8s cluster
 
-TODO - Option for default (Nodeport - no LB)
-TODO - Null outputs
-TODO - Check kubectl get nodes
-
+### Probably needs to be done:
+- TODO: Option for default (Nodeport - no LB)
+    - Deploy frontend-service.yaml as it is (Commented out in script - lines 215 and 218)
+- TODO: Null outputs
+- TODO: Check kubectl get nodes
 
 ### RedisExample.sh up | up online
 ```

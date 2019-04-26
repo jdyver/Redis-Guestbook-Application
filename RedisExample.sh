@@ -212,8 +212,10 @@ up)
 	if [ $REDIS_OFFLINE == 0 ]
 	then
 		curl -L $FILE | sed "s@NodePort@LoadBalancer@" | kubectl apply -f -
+		#kubectl apply -f $FILE
 	else
 		cat $FILE | sed "s@NodePort@LoadBalancer@" | kubectl apply -f -
+		#kubectl apply -f $FILE
 	fi
 
 	## Optional: Check the deployed service
