@@ -15,7 +15,6 @@ Kubectl is setup to k8s cluster
 - TODO: Option for default (Nodeport - no LB)
     - Deploy frontend-service.yaml as it is (Commented out in RedisExample.sh - lines 215 and 218)
 - TODO: Null outputs
-- TODO: Check kubectl get nodes
 
 ### RedisExample.sh up | up online
 ```

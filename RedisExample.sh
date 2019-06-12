@@ -8,20 +8,28 @@
 # Requires: Kubectl setup to k8s cluster
 
 # TODO - Null outputs
-# TODO - Check kubectl get nodes
+
+# Requires: Kubectl setup to k8s cluster
+TASK=$(kubectl get nodes | grep Ready)
+if [ "$TASK" == "" ]
+then
+    echo "Fail - WordPressExample.sh: Connect to kubectl"
+    echo
+    exit
+fi
 
 case "$2" in
 online)
 	#echo "RedisExample.sh - Online"
 	#echo
 	REDIS_OFFLINE=0
-	REDIS_CMD="https://k8s.io/examples/application/guestbook/"
+	REDIS_PATH="https://k8s.io/examples/application/guestbook/"
 	;;
 "")
 	#echo "RedisExample.sh - Offline"
 	#echo
 	REDIS_OFFLINE=1
-	REDIS_CMD="./Files/"
+	REDIS_PATH="./Files/"
 	;;
 *)
 	echo "Fail - RedisExample.sh up | up online | down 
@@ -32,13 +40,19 @@ online)
 esac
 
 case "$1" in 
+test)
+#$HOME/Documents/Scripts/Phoenix/konvoy_v0.0.18/konvoy apply kubeconfig --force-overwrite
+kubectl get nodes
+kubectl config get-contexts
+exit
+;;
 up) 
 	echo "RedisExample.sh - Starting Guestbook Application..."
 	echo
 
 	## Deploy Redis master pods and service:
 	#	kubectl apply -f https://k8s.io/examples/application/guestbook/redis-master-deployment.yaml
-	FILE=$REDIS_CMD"redis-master-deployment.yaml"
+	FILE=$REDIS_PATH"redis-master-deployment.yaml"
 	kubectl apply -f $FILE
 
 	## Optional: Check Pod
@@ -65,7 +79,7 @@ up)
 	done
 
 	# kubectl apply -f https://k8s.io/examples/application/guestbook/redis-master-service.yaml
-	FILE=$REDIS_CMD"redis-master-service.yaml"
+	FILE=$REDIS_PATH"redis-master-service.yaml"
 	kubectl apply -f $FILE
 
 	#kubectl logs -f <POD-NAME>
@@ -93,7 +107,7 @@ up)
 
 	## Deploy the Redis slaves
 	# kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-deployment.yaml
-	FILE=$REDIS_CMD"redis-slave-deployment.yaml"
+	FILE=$REDIS_PATH"redis-slave-deployment.yaml"
 	kubectl apply -f $FILE
 
 	## Optional: Check Pod
@@ -141,7 +155,7 @@ up)
 	done
 
 	# kubectl apply -f https://k8s.io/examples/application/guestbook/redis-slave-service.yaml
-	FILE=$REDIS_CMD"redis-slave-service.yaml"
+	FILE=$REDIS_PATH"redis-slave-service.yaml"
 	kubectl apply -f $FILE
 
 
@@ -171,7 +185,7 @@ up)
 
 	## Deploy the webapp frontend
 	# kubectl apply -f https://k8s.io/examples/application/guestbook/frontend-deployment.yaml
-	FILE=$REDIS_CMD"frontend-deployment.yaml"
+	FILE=$REDIS_PATH"frontend-deployment.yaml"
 	kubectl apply -f $FILE
 
 	## Optional: Check frontend replicas
@@ -188,7 +202,6 @@ up)
 		SED_VAR=$NUM"p"
     	# Get pod status
     	TASK=$(kubectl get pods -l app=guestbook -l tier=frontend | grep frontend | awk '{print $3}' | sed -n $SED_VAR)
-
       if [ "$TASK" != "Running" ]
       then
            	printf "."
@@ -207,7 +220,7 @@ up)
 
 	## Deploy the load-balancer - NOTE: Exchanging NodePort for LoadBalancer bc of AWS capabilities
 	# curl -L https://k8s.io/examples/application/guestbook/frontend-service.yaml | sed "s@NodePort@LoadBalancer@" | kubectl apply -f -
-	FILE=$REDIS_CMD"frontend-service.yaml"
+	FILE=$REDIS_PATH"frontend-service.yaml"
 
 	if [ $REDIS_OFFLINE == 0 ]
 	then
